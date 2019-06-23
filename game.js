@@ -5,9 +5,8 @@ var started=false;
 var level=0;
 
 $(document).keypress(function(){
-  // console.log("hi");
-  if(!started){
-  $("h1").text("Level "+ level);
+   if(!started){
+  $("#level-title").text("Level "+ level);
   nextSequence();
 started=true;
 }
@@ -22,10 +21,36 @@ $(".btn").click(function(){
   // console.log(userClickedPattern);
 });
 
+function checkAnswer(currentLevel){
+  if(gamePattern[currentLevel]===userClickedPattern[currentLevel]){
+       if(userClickedPattern.length===gamePattern.length){
+       setTimeout(function(){
+        nextSequence();
+      },1000);
+//      
+    }
+  }
+    else{
+        playSound("wrong");
+      $("body").addClass("game-over");
+        $("#level-title").text("Game Over, Press Any Key to Restart");
+        
+      setTimeout(function(){
+        $("body").removeClass("game-over");
+      },200);
+      
+      startOver();
+    }
+
+   
+     
+    }
+
 
 function nextSequence() {
+    userClickedPattern=[];
   level++;
-  $("h1").text("Level "+ level);
+  $("#level-title").text("Level "+ level);
 
   var randomNumber = Math.floor(Math.random() * 4);
   var randomChosenColour = buttonColours[randomNumber];
@@ -35,6 +60,7 @@ function nextSequence() {
   playSound(randomChosenColour);
 
 }
+
 
 function playSound(name){
   var audio = new Audio ("sounds\\" + name + ".mp3");
@@ -48,30 +74,7 @@ function animatePress(currentColour){
   },100);
 }
 
-function checkAnswer(currentLevel){
-  var wrongAudio= new Audio("sounds\\wrong.mp3");
-  if(userClickedPattern[currentLevel]===gamePattern[currentLevel]){
-      console.log("success");
-      console.log(userClickedPattern);
-      console.log(gamePattern);
-    }
-    else{
-      wrongAudio.play();
-      $("body").addClass("game-over");
-      setTimeout(function(){
-        $("body").removeClass("game-over");
-      },200);
-      $("h1").text("Game Over, Press Any Key to Restart");
-      startOver();
-    }
 
-    if(userClickedPattern.length===gamePattern.length){
-      setTimeout(function(){
-        nextSequence();
-      },1000);
-      userClickedPattern=[];
-    }
-}
 
 function startOver(){
   level=0;
